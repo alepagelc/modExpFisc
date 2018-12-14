@@ -495,8 +495,11 @@ namespace modExpFiscL
                                                     }
                                                     finally
                                                     {
-                                                        htProdTva2 = Convert.ToDouble(retourRequeteTVA2["PROD"]);
-                                                        htPrestTva2 = Convert.ToDouble(retourRequeteTVA2["PREST"]);
+                                                        while (retourRequeteTVA2.Read())
+                                                        {
+                                                            htProdTva2 = Convert.ToDouble(retourRequeteTVA2["PROD"]);
+                                                            htPrestTva2 = Convert.ToDouble(retourRequeteTVA2["PREST"]);
+                                                        }
                                                     }
                                                 }
 
@@ -529,8 +532,11 @@ namespace modExpFiscL
                                                     }
                                                     finally
                                                     {
-                                                        htProdTva3 = Convert.ToDouble(retourRequeteTVA3["PROD"]);
-                                                        htPrestTva3 = Convert.ToDouble(retourRequeteTVA3["PREST"]);
+                                                        while (retourRequeteTVA3.Read())
+                                                        {
+                                                            htProdTva3 = Convert.ToDouble(retourRequeteTVA3["PROD"]);
+                                                            htPrestTva3 = Convert.ToDouble(retourRequeteTVA3["PREST"]);
+                                                        }                                                       
                                                     }
                                                 }
                                             }
@@ -553,7 +559,7 @@ namespace modExpFiscL
                                                 {
                                                     try
                                                     {
-                                                        retourRequeteTVA4 = maRequeteTVA1.ExecuteReader();
+                                                        retourRequeteTVA4 = maRequeteTVA4.ExecuteReader();
                                                     }
                                                     catch (Exception ex)
                                                     {
@@ -562,16 +568,20 @@ namespace modExpFiscL
                                                     }
                                                     finally
                                                     {
-                                                        htProdTva4 = Convert.ToDouble(retourRequeteTVA4["PROD"]);
-                                                        htPrestTva4 = Convert.ToDouble(retourRequeteTVA4["PREST"]);
+                                                        while(retourRequeteTVA4.Read())
+                                                        {
+                                                            htProdTva4 = Convert.ToDouble(retourRequeteTVA4["PROD"]);
+                                                            htPrestTva4 = Convert.ToDouble(retourRequeteTVA4["PREST"]);
+                                                        }                                                        
                                                     }
                                                 }
                                             }
 
-                                            chaineConnexionReqTVA1.Close();
-                                            chaineConnexionReqTVA2.Close();
-                                            chaineConnexionReqTVA3.Close();
-                                            chaineConnexionReqTVA4.Close();
+                                            retourRequeteTVA1.Close();
+                                            retourRequeteTVA2.Close();
+                                            retourRequeteTVA3.Close();
+                                            retourRequeteTVA4.Close();
+                                            retourRequeteART.Close();
                                         }
                                     }
 
@@ -712,7 +722,7 @@ namespace modExpFiscL
                             finally
                             {
                                 // Fermeture de la connexion
-                                chaineConnexionReq1.Close();
+                                retourRequete1.Close();
                             }
                         }
                     }
@@ -875,10 +885,12 @@ namespace modExpFiscL
                                                     }
                                                     finally
                                                     {
-                                                        htProdTva1 = Convert.ToDouble(retourRequeteTVA1["PROD"]);
-                                                        htPrestTva1 = Convert.ToDouble(retourRequeteTVA1["PREST"]);
+                                                        while(retourRequeteTVA1.Read())
+                                                        {
+                                                            htProdTva1 = Convert.ToDouble(retourRequeteTVA1["PROD"]);
+                                                            htPrestTva1 = Convert.ToDouble(retourRequeteTVA1["PREST"]);
+                                                        }                                                        
                                                     }
-
                                                 }
                                             }
 
@@ -909,11 +921,13 @@ namespace modExpFiscL
                                                     }
                                                     finally
                                                     {
-                                                        htProdTva2 = Convert.ToDouble(retourRequeteTVA2["PROD"]);
-                                                        htPrestTva2 = Convert.ToDouble(retourRequeteTVA2["PREST"]);
+                                                        while(retourRequeteTVA2.Read())
+                                                        {
+                                                            htProdTva2 = Convert.ToDouble(retourRequeteTVA2["PROD"]);
+                                                            htPrestTva2 = Convert.ToDouble(retourRequeteTVA2["PREST"]);
+                                                        }                                                        
                                                     }
                                                 }
-
                                             }
 
                                             using (chaineConnexionReqTVA3 = new OdbcConnection(paramConnexion))
@@ -943,8 +957,11 @@ namespace modExpFiscL
                                                     }
                                                     finally
                                                     {
-                                                        htProdTva3 = Convert.ToDouble(retourRequeteTVA3["PROD"]);
-                                                        htPrestTva3 = Convert.ToDouble(retourRequeteTVA3["PREST"]);
+                                                        while(retourRequeteTVA3.Read())
+                                                        {
+                                                            htProdTva3 = Convert.ToDouble(retourRequeteTVA3["PROD"]);
+                                                            htPrestTva3 = Convert.ToDouble(retourRequeteTVA3["PREST"]);
+                                                        }                                                        
                                                     }
                                                 }
                                             }
@@ -967,7 +984,7 @@ namespace modExpFiscL
                                                 {
                                                     try
                                                     {
-                                                        retourRequeteTVA4 = maRequeteTVA1.ExecuteReader();
+                                                        retourRequeteTVA4 = maRequeteTVA4.ExecuteReader();
                                                     }
                                                     catch (Exception ex)
                                                     {
@@ -976,16 +993,20 @@ namespace modExpFiscL
                                                     }
                                                     finally
                                                     {
-                                                        htProdTva4 = Convert.ToDouble(retourRequeteTVA4["PROD"]);
-                                                        htPrestTva4 = Convert.ToDouble(retourRequeteTVA4["PREST"]);
+                                                        while(retourRequeteTVA4.Read())
+                                                        {
+                                                            htProdTva4 = Convert.ToDouble(retourRequeteTVA4["PROD"]);
+                                                            htPrestTva4 = Convert.ToDouble(retourRequeteTVA4["PREST"]);
+                                                        }                                                     
                                                     }
                                                 }
                                             }
 
-                                            chaineConnexionReqTVA1.Close();
-                                            chaineConnexionReqTVA2.Close();
-                                            chaineConnexionReqTVA3.Close();
-                                            chaineConnexionReqTVA4.Close();
+                                            retourRequeteTVA1.Close();
+                                            retourRequeteTVA2.Close();
+                                            retourRequeteTVA3.Close();
+                                            retourRequeteTVA4.Close();
+                                            retourRequeteART.Close();
                                         }
                                     }
 
@@ -1126,7 +1147,7 @@ namespace modExpFiscL
                             finally
                             {
                                 // Fermeture de la connexion
-                                chaineConnexionReq1.Close();
+                                retourRequete1.Close();
                             }
                         }
                     }
