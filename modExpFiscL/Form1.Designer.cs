@@ -69,6 +69,7 @@
             this.textBoxServeur.Size = new System.Drawing.Size(107, 20);
             this.textBoxServeur.TabIndex = 3;
             this.textBoxServeur.Text = "127.0.0.1";
+            this.textBoxServeur.KeyUp += new System.Windows.Forms.KeyEventHandler(this.textBoxServeur_KeyUp);
             // 
             // textBoxPort
             // 
@@ -77,6 +78,7 @@
             this.textBoxPort.Size = new System.Drawing.Size(40, 20);
             this.textBoxPort.TabIndex = 2;
             this.textBoxPort.Text = "5432";
+            this.textBoxPort.KeyUp += new System.Windows.Forms.KeyEventHandler(this.textBoxPort_KeyUp);
             // 
             // label2
             // 
