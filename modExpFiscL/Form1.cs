@@ -459,10 +459,12 @@ namespace modExpFiscL
                                                     }
                                                     finally
                                                     {
-                                                        htProdTva1 = Convert.ToDouble(retourRequeteTVA1["PROD"]);
-                                                        htPrestTva1 = Convert.ToDouble(retourRequeteTVA1["PREST"]);
+                                                        while(retourRequeteTVA1.Read())
+                                                        {
+                                                            htProdTva1 = Convert.ToDouble(retourRequeteTVA1["PROD"]);
+                                                            htPrestTva1 = Convert.ToDouble(retourRequeteTVA1["PREST"]);
+                                                        }
                                                     }
-
                                                 }
                                             }
 
