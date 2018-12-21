@@ -767,6 +767,7 @@ namespace modExpFiscL
                 }
             }
 
+            requeteTotal = "SELECT (SELECT COUNT(*) FROM facture)+(SELECT COUNT(*) FROM facture_arch) AS NB_FACT_TOTAL";
             requete1 = "SELECT f.id_facture_arch AS ID, f.numdoc AS NUMFACT, dtdoc AS DATFAC, lv.liste || ' ' || cc.nom || ' ' || cc.prenom AS NOM, f.totalttc AS TOTTTC, f.taxe_taux1 AS TXTAXE1, taxe_taux2 AS TXTAXE2, taxe_taux3 AS TXTAXE3, taxe_taux4 AS TXTAXE4 FROM facture_arch f, client_coordonnees cc, listvoca lv WHERE cc.titre_id = lv.id AND f.client_coordonnees_id = cc.id_client_coordonnees ORDER BY DATFAC";
 
             if ((portServeur != null) && (adrServeur != null))
