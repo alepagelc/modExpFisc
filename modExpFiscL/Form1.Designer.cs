@@ -100,7 +100,7 @@
             // 
             // btnExtraire
             // 
-            this.btnExtraire.Location = new System.Drawing.Point(148, 138);
+            this.btnExtraire.Location = new System.Drawing.Point(155, 127);
             this.btnExtraire.Name = "btnExtraire";
             this.btnExtraire.Size = new System.Drawing.Size(75, 23);
             this.btnExtraire.TabIndex = 1;
@@ -112,7 +112,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(382, 179);
+            this.ClientSize = new System.Drawing.Size(382, 157);
             this.Controls.Add(this.btnExtraire);
             this.Controls.Add(this.groupBox1);
             this.Name = "FrmExport";

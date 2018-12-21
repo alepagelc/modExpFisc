@@ -267,6 +267,8 @@ namespace modExpFiscL
             double totHtPrest55 = 0;
             double totHtPrest0 = 0;
 
+            sw.Close();
+
             paramConnexion = "Driver={PostgreSQL UNICODE};Server=" + textBoxServeur.Text + ";Port=" + textBoxPort.Text + ";Database=" + comboBoxBase.Text + ";Uid=" + loginPG + ";Pwd=" + passPG + ";";
 
             requete1 = "SELECT f.id_facture AS ID, f.numdoc AS NUMFACT, dtdoc AS DATFAC, lv.liste || ' ' || cc.nom || ' ' || cc.prenom AS NOM, f.totalttc AS TOTTTC, f.taxe_taux1 AS TXTAXE1, taxe_taux2 AS TXTAXE2, taxe_taux3 AS TXTAXE3, taxe_taux4 AS TXTAXE4 FROM facture f, client_coordonnees cc, listvoca lv WHERE cc.titre_id = lv.id AND f.client_coordonnees_id = cc.id_client_coordonnees ORDER BY DATFAC";
@@ -293,39 +295,44 @@ namespace modExpFiscL
                         // Exécution si pas d'exception
                         if (mesTests)
                         {
-                            sw.Write("Numéro de la facture");
-                            sw.Write(";");
-                            sw.Write("Date de la facture");
-                            sw.Write(";");
-                            sw.Write("Nom du client");
-                            sw.Write(";");
-                            sw.Write("Listes articles");
-                            sw.Write(";");
-                            sw.Write("Listes options");
-                            sw.Write(";");
-                            sw.Write("Total TVA 20%");
-                            sw.Write(";");
-                            sw.Write("Total TVA 10%");
-                            sw.Write(";");
-                            sw.Write("Total TVA 5,5%");
-                            sw.Write(";");
-                            sw.Write("Total Produit 20%");
-                            sw.Write(";");
-                            sw.Write("Total Produit 10%");
-                            sw.Write(";");
-                            sw.Write("Total Produit 5,5%");
-                            sw.Write(";");
-                            sw.Write("Total Produit 0%");
-                            sw.Write(";");
-                            sw.Write("Total Prestation 20%");
-                            sw.Write(";");
-                            sw.Write("Total Prestation 10%");
-                            sw.Write(";");
-                            sw.Write("Total Prestation 5,5%");
-                            sw.Write(";");
-                            sw.Write("Total Prestation 0%");
-                            sw.Write(";");
-                            sw.Write("Total TTC");
+                            using (sw = File.AppendText(Application.StartupPath + "\\extraction_prodevis.csv"))
+                            {
+                                sw.Write("Numéro de la facture");
+                                sw.Write(";");
+                                sw.Write("Date de la facture");
+                                sw.Write(";");
+                                sw.Write("Nom du client");
+                                sw.Write(";");
+                                sw.Write("Listes articles");
+                                sw.Write(";");
+                                sw.Write("Listes options");
+                                sw.Write(";");
+                                sw.Write("Total TVA 20%");
+                                sw.Write(";");
+                                sw.Write("Total TVA 10%");
+                                sw.Write(";");
+                                sw.Write("Total TVA 5,5%");
+                                sw.Write(";");
+                                sw.Write("Total Produit 20%");
+                                sw.Write(";");
+                                sw.Write("Total Produit 10%");
+                                sw.Write(";");
+                                sw.Write("Total Produit 5,5%");
+                                sw.Write(";");
+                                sw.Write("Total Produit 0%");
+                                sw.Write(";");
+                                sw.Write("Total Prestation 20%");
+                                sw.Write(";");
+                                sw.Write("Total Prestation 10%");
+                                sw.Write(";");
+                                sw.Write("Total Prestation 5,5%");
+                                sw.Write(";");
+                                sw.Write("Total Prestation 0%");
+                                sw.Write(";");
+                                sw.Write("Total TTC");
+                                sw.Write(Environment.NewLine);
+                            }
+
 
                             // Exeécution de la requête
                             retourRequete1 = maRequete1.ExecuteReader();
@@ -334,12 +341,16 @@ namespace modExpFiscL
                                 // Remplissage du comboBox
                                 while (retourRequete1.Read())
                                 {
-                                    sw.Write(retourRequete1["NUMFACT"]);
-                                    sw.Write(";");
-                                    sw.Write(retourRequete1["DATFAC"]);
-                                    sw.Write(";");
-                                    sw.Write(retourRequete1["NOM"]);
-                                    sw.Write(";");
+                                    using (sw = File.AppendText(Application.StartupPath + "\\extraction_prodevis.csv"))
+                                    {
+                                        sw.Write(retourRequete1["NUMFACT"]);
+                                        sw.Write(";");
+                                        sw.Write(retourRequete1["DATFAC"]);
+                                        sw.Write(";");
+                                        sw.Write(retourRequete1["NOM"]);
+                                        sw.Write(";");
+                                    }
+
 
                                     requeteTVA1 = "SELECT taxe_num, SUM(ROUND((prixventerpp*qte)::numeric,2))+SUM(ROUND((prixventepre2rpp*qte)::numeric,2)) AS PROD, SUM(ROUND((prixventepre1rpp*qte)::numeric,2)) AS PREST, SUM(ROUND((prix_ecotaxe*qte)::numeric,2)) AS ECO FROM ligne_affaire_facture WHERE produit_type <> 'S' AND produit_type <> 'RC' AND FACTURE_id=" + retourRequete1["ID"] + " AND taxe_num=1 GROUP BY taxe_num";
                                     requeteTVA2 = "SELECT taxe_num, SUM(ROUND((prixventerpp*qte)::numeric,2))+SUM(ROUND((prixventepre2rpp*qte)::numeric,2)) AS PROD, SUM(ROUND((prixventepre1rpp*qte)::numeric,2)) AS PREST, SUM(ROUND((prix_ecotaxe*qte)::numeric,2)) AS ECO FROM ligne_affaire_facture WHERE produit_type <> 'S' AND produit_type <> 'RC' AND FACTURE_id=" + retourRequete1["ID"] + " AND taxe_num=2 GROUP BY taxe_num";
@@ -384,14 +395,18 @@ namespace modExpFiscL
 
                                                     while (retourRequeteART.Read())
                                                     {
-                                                        if (i == 0)
+                                                        using (sw = File.AppendText(Application.StartupPath + "\\extraction_prodevis.csv"))
                                                         {
-                                                            sw.Write("Article " + i + " : " + retourRequeteART["DESIG"]);
+                                                            if (i == 1)
+                                                            {
+                                                                sw.Write("Article " + i + " : " + retourRequeteART["DESIG"]);
+                                                            }
+                                                            else
+                                                            {
+                                                                sw.Write(" - Article " + i + " : " + retourRequeteART["DESIG"]);
+                                                            }
                                                         }
-                                                        else
-                                                        {
-                                                            sw.Write(" - Article " + i + " : " + retourRequeteART["DESIG"]);
-                                                        }
+
                                                         i++;
                                                     }
                                                 }
@@ -402,7 +417,10 @@ namespace modExpFiscL
                                                 }
                                                 finally
                                                 {
-                                                    sw.Write(";");
+                                                    using (sw = File.AppendText(Application.StartupPath + "\\extraction_prodevis.csv"))
+                                                    {
+                                                        sw.Write(";");
+                                                    }
                                                 }
 
                                                 try
@@ -411,13 +429,16 @@ namespace modExpFiscL
 
                                                     while (retourRequeteART.Read())
                                                     {
-                                                        if (i == 0)
+                                                        using (sw = File.AppendText(Application.StartupPath + "\\extraction_prodevis.csv"))
                                                         {
-                                                            sw.Write("Options article " + i + " : " + retourRequeteART["DESIGNATION"]);
-                                                        }
-                                                        else
-                                                        {
-                                                            sw.Write(" - Options article " + i + " : " + retourRequeteART["OPTIONS"]);
+                                                            if (i == 1)
+                                                            {
+                                                                sw.Write("Options article " + i + " : " + retourRequeteART["OPTIONS"]);
+                                                            }
+                                                            else
+                                                            {
+                                                                sw.Write(" - Options article " + i + " : " + retourRequeteART["OPTIONS"]);
+                                                            }
                                                         }
                                                         i++;
                                                     }
@@ -429,16 +450,20 @@ namespace modExpFiscL
                                                 }
                                                 finally
                                                 {
-                                                    sw.Write(";");
+                                                    using (sw = File.AppendText(Application.StartupPath + "\\extraction_prodevis.csv"))
+                                                    {
+                                                        sw.Write(";");
+                                                    }
                                                 }
                                             }
 
+                                            // CONNEXION POUR LES TVA
                                             using (chaineConnexionReqTVA1 = new OdbcConnection(paramConnexion))
                                             {
                                                 try
                                                 {
                                                     // Passage de la commande
-                                                    maRequeteTVA1 = new OdbcCommand(requeteTVA1, chaineConnexionListeBases);
+                                                    maRequeteTVA1 = new OdbcCommand(requeteTVA1, chaineConnexionReqTVA1);
                                                     // Ouverture
                                                     chaineConnexionReqTVA1.Open();
                                                 }
@@ -459,7 +484,16 @@ namespace modExpFiscL
                                                     }
                                                     finally
                                                     {
-                                                        while(retourRequeteTVA1.Read())
+                                                        //retourRequeteTVA1.Read();
+                                                        //MessageBox.Show(Convert.ToString(retourRequeteTVA1[0]));
+                                                        //MessageBox.Show(Convert.ToString(retourRequeteTVA1[1]));
+                                                        //MessageBox.Show(Convert.ToString(retourRequeteTVA1[2]));
+                                                        //MessageBox.Show(Convert.ToString(retourRequeteTVA1[3]));
+                                                        //MessageBox.Show(Convert.ToString(retourRequeteTVA1["taxe_num"]));
+                                                        //MessageBox.Show(Convert.ToString(retourRequeteTVA1["PROD"]));
+                                                        //MessageBox.Show(Convert.ToString(retourRequeteTVA1["PREST"]));
+                                                        //MessageBox.Show(Convert.ToString(retourRequeteTVA1["ECO"]));
+                                                        while (retourRequeteTVA1.Read())
                                                         {
                                                             htProdTva1 = Convert.ToDouble(retourRequeteTVA1["PROD"]);
                                                             htPrestTva1 = Convert.ToDouble(retourRequeteTVA1["PREST"]);
@@ -473,7 +507,7 @@ namespace modExpFiscL
                                                 try
                                                 {
                                                     // Passage de la commande
-                                                    maRequeteTVA1 = new OdbcCommand(requeteTVA2, chaineConnexionListeBases);
+                                                    maRequeteTVA2 = new OdbcCommand(requeteTVA2, chaineConnexionReqTVA2);
                                                     // Ouverture
                                                     chaineConnexionReqTVA2.Open();
                                                 }
@@ -510,7 +544,7 @@ namespace modExpFiscL
                                                 try
                                                 {
                                                     // Passage de la commande
-                                                    maRequeteTVA3 = new OdbcCommand(requeteTVA3, chaineConnexionListeBases);
+                                                    maRequeteTVA3 = new OdbcCommand(requeteTVA3, chaineConnexionReqTVA3);
                                                     // Ouverture
                                                     chaineConnexionReqTVA3.Open();
                                                 }
@@ -546,7 +580,7 @@ namespace modExpFiscL
                                                 try
                                                 {
                                                     // Passage de la commande
-                                                    maRequeteTVA4 = new OdbcCommand(requeteTVA4, chaineConnexionListeBases);
+                                                    maRequeteTVA4 = new OdbcCommand(requeteTVA4, chaineConnexionReqTVA4);
                                                     // Ouverture
                                                     chaineConnexionReqTVA4.Open();
                                                 }
@@ -689,31 +723,35 @@ namespace modExpFiscL
                                             break;
                                     }
 
-                                    sw.Write(Convert.ToString(totTva20));
-                                    sw.Write(";");
-                                    sw.Write(Convert.ToString(totTva10));
-                                    sw.Write(";");
-                                    sw.Write(Convert.ToString(totTva55));
-                                    sw.Write(";");
-                                    sw.Write(Convert.ToString(totHtProd20));
-                                    sw.Write(";");
-                                    sw.Write(Convert.ToString(totHtProd10));
-                                    sw.Write(";");
-                                    sw.Write(Convert.ToString(totHtProd55));
-                                    sw.Write(";");
-                                    sw.Write(Convert.ToString(totHtProd0));
-                                    sw.Write(";");
-                                    sw.Write(Convert.ToString(totHtPrest20));
-                                    sw.Write(";");
-                                    sw.Write(Convert.ToString(totHtPrest10));
-                                    sw.Write(";");
-                                    sw.Write(Convert.ToString(totHtPrest55));
-                                    sw.Write(";");
-                                    sw.Write(Convert.ToString(totHtPrest0));
-                                    sw.Write(";");
-                                    sw.Write(retourRequete1["TOTTTC"]);                                       
+                                    using (sw = File.AppendText(Application.StartupPath + "\\extraction_prodevis.csv"))
+                                    {
+                                        sw.Write(Convert.ToString(totTva20));
+                                        sw.Write(";");
+                                        sw.Write(Convert.ToString(totTva10));
+                                        sw.Write(";");
+                                        sw.Write(Convert.ToString(totTva55));
+                                        sw.Write(";");
+                                        sw.Write(Convert.ToString(totHtProd20));
+                                        sw.Write(";");
+                                        sw.Write(Convert.ToString(totHtProd10));
+                                        sw.Write(";");
+                                        sw.Write(Convert.ToString(totHtProd55));
+                                        sw.Write(";");
+                                        sw.Write(Convert.ToString(totHtProd0));
+                                        sw.Write(";");
+                                        sw.Write(Convert.ToString(totHtPrest20));
+                                        sw.Write(";");
+                                        sw.Write(Convert.ToString(totHtPrest10));
+                                        sw.Write(";");
+                                        sw.Write(Convert.ToString(totHtPrest55));
+                                        sw.Write(";");
+                                        sw.Write(Convert.ToString(totHtPrest0));
+                                        sw.Write(";");
+                                        sw.Write(retourRequete1["TOTTTC"]);
+                                        sw.Write(Environment.NewLine);
+                                    }
                                 }
-                                sw.Write(Environment.NewLine);
+                                
                             }
                             catch(Exception ex)
                             {
@@ -760,12 +798,15 @@ namespace modExpFiscL
                                 // Remplissage du comboBox
                                 while (retourRequete1.Read())
                                 {
-                                    sw.Write(retourRequete1["NUMFACT"]);
-                                    sw.Write(";");
-                                    sw.Write(retourRequete1["DATFAC"]);
-                                    sw.Write(";");
-                                    sw.Write(retourRequete1["NOM"]);
-                                    sw.Write(";");
+                                    using (sw = File.AppendText(Application.StartupPath + "\\extraction_prodevis.csv"))
+                                    {
+                                        sw.Write(retourRequete1["NUMFACT"]);
+                                        sw.Write(";");
+                                        sw.Write(retourRequete1["DATFAC"]);
+                                        sw.Write(";");
+                                        sw.Write(retourRequete1["NOM"]);
+                                        sw.Write(";");
+                                    }
 
                                     requeteTVA1 = "SELECT taxe_num, SUM(ROUND((prixventerpp*qte)::numeric,2))+SUM(ROUND((prixventepre2rpp*qte)::numeric,2)) AS PROD, SUM(ROUND((prixventepre1rpp*qte)::numeric,2)) AS PREST, SUM(ROUND((prix_ecotaxe*qte)::numeric,2)) AS ECO FROM ligne_affaire_facture_arch WHERE produit_type <> 'S' AND produit_type <> 'RC' AND facture_arch_id=" + retourRequete1["ID"] + " AND taxe_num=1 GROUP BY taxe_num";
                                     requeteTVA2 = "SELECT taxe_num, SUM(ROUND((prixventerpp*qte)::numeric,2))+SUM(ROUND((prixventepre2rpp*qte)::numeric,2)) AS PROD, SUM(ROUND((prixventepre1rpp*qte)::numeric,2)) AS PREST, SUM(ROUND((prix_ecotaxe*qte)::numeric,2)) AS ECO FROM ligne_affaire_facture_arch WHERE produit_type <> 'S' AND produit_type <> 'RC' AND facture_arch_id=" + retourRequete1["ID"] + " AND taxe_num=2 GROUP BY taxe_num";
@@ -810,13 +851,16 @@ namespace modExpFiscL
 
                                                     while (retourRequeteART.Read())
                                                     {
-                                                        if (i == 0)
+                                                        using (sw = File.AppendText(Application.StartupPath + "\\extraction_prodevis.csv"))
                                                         {
-                                                            sw.Write("Article " + i + " : " + retourRequeteART["DESIG"]);
-                                                        }
-                                                        else
-                                                        {
-                                                            sw.Write(" - Article " + i + " : " + retourRequeteART["DESIG"]);
+                                                            if (i == 1)
+                                                            {
+                                                                sw.Write("Article " + i + " : " + retourRequeteART["DESIG"]);
+                                                            }
+                                                            else
+                                                            {
+                                                                sw.Write(" - Article " + i + " : " + retourRequeteART["DESIG"]);
+                                                            }
                                                         }
                                                         i++;
                                                     }
@@ -828,7 +872,10 @@ namespace modExpFiscL
                                                 }
                                                 finally
                                                 {
-                                                    sw.Write(";");
+                                                    using (sw = File.AppendText(Application.StartupPath + "\\extraction_prodevis.csv"))
+                                                    {
+                                                        sw.Write(";");
+                                                    }
                                                 }
 
                                                 try
@@ -837,13 +884,16 @@ namespace modExpFiscL
 
                                                     while (retourRequeteART.Read())
                                                     {
-                                                        if (i == 0)
+                                                        using (sw = File.AppendText(Application.StartupPath + "\\extraction_prodevis.csv"))
                                                         {
-                                                            sw.Write("Options article " + i + " : " + retourRequeteART["DESIGNATION"]);
-                                                        }
-                                                        else
-                                                        {
-                                                            sw.Write(" - Options article " + i + " : " + retourRequeteART["OPTIONS"]);
+                                                            if (i == 1)
+                                                            {
+                                                                sw.Write("Options article " + i + " : " + retourRequeteART["DESIGNATION"]);
+                                                            }
+                                                            else
+                                                            {
+                                                                sw.Write(" - Options article " + i + " : " + retourRequeteART["OPTIONS"]);
+                                                            }
                                                         }
                                                         i++;
                                                     }
@@ -855,7 +905,10 @@ namespace modExpFiscL
                                                 }
                                                 finally
                                                 {
-                                                    sw.Write(";");
+                                                    using (sw = File.AppendText(Application.StartupPath + "\\extraction_prodevis.csv"))
+                                                    {
+                                                        sw.Write(";");
+                                                    }
                                                 }
                                             }
 
@@ -864,7 +917,7 @@ namespace modExpFiscL
                                                 try
                                                 {
                                                     // Passage de la commande
-                                                    maRequeteTVA1 = new OdbcCommand(requeteTVA1, chaineConnexionListeBases);
+                                                    maRequeteTVA1 = new OdbcCommand(requeteTVA1, chaineConnexionReqTVA1);
                                                     // Ouverture
                                                     chaineConnexionReqTVA1.Open();
                                                 }
@@ -899,7 +952,7 @@ namespace modExpFiscL
                                                 try
                                                 {
                                                     // Passage de la commande
-                                                    maRequeteTVA1 = new OdbcCommand(requeteTVA2, chaineConnexionListeBases);
+                                                    maRequeteTVA2 = new OdbcCommand(requeteTVA2, chaineConnexionReqTVA2);
                                                     // Ouverture
                                                     chaineConnexionReqTVA2.Open();
                                                 }
@@ -935,7 +988,7 @@ namespace modExpFiscL
                                                 try
                                                 {
                                                     // Passage de la commande
-                                                    maRequeteTVA3 = new OdbcCommand(requeteTVA3, chaineConnexionListeBases);
+                                                    maRequeteTVA3 = new OdbcCommand(requeteTVA3, chaineConnexionReqTVA3);
                                                     // Ouverture
                                                     chaineConnexionReqTVA3.Open();
                                                 }
@@ -971,7 +1024,7 @@ namespace modExpFiscL
                                                 try
                                                 {
                                                     // Passage de la commande
-                                                    maRequeteTVA4 = new OdbcCommand(requeteTVA4, chaineConnexionListeBases);
+                                                    maRequeteTVA4 = new OdbcCommand(requeteTVA4, chaineConnexionReqTVA4);
                                                     // Ouverture
                                                     chaineConnexionReqTVA4.Open();
                                                 }
@@ -1114,31 +1167,34 @@ namespace modExpFiscL
                                             break;
                                     }
 
-                                    sw.Write(Convert.ToString(totTva20));
-                                    sw.Write(";");
-                                    sw.Write(Convert.ToString(totTva10));
-                                    sw.Write(";");
-                                    sw.Write(Convert.ToString(totTva55));
-                                    sw.Write(";");
-                                    sw.Write(Convert.ToString(totHtProd20));
-                                    sw.Write(";");
-                                    sw.Write(Convert.ToString(totHtProd10));
-                                    sw.Write(";");
-                                    sw.Write(Convert.ToString(totHtProd55));
-                                    sw.Write(";");
-                                    sw.Write(Convert.ToString(totHtProd0));
-                                    sw.Write(";");
-                                    sw.Write(Convert.ToString(totHtPrest20));
-                                    sw.Write(";");
-                                    sw.Write(Convert.ToString(totHtPrest10));
-                                    sw.Write(";");
-                                    sw.Write(Convert.ToString(totHtPrest55));
-                                    sw.Write(";");
-                                    sw.Write(Convert.ToString(totHtPrest0));
-                                    sw.Write(";");
-                                    sw.Write(retourRequete1["TOTTTC"]);
-                                }
-                                sw.Write(Environment.NewLine);
+                                    using (sw = File.AppendText(Application.StartupPath + "\\extraction_prodevis.csv"))
+                                    {
+                                        sw.Write(Convert.ToString(totTva20));
+                                        sw.Write(";");
+                                        sw.Write(Convert.ToString(totTva10));
+                                        sw.Write(";");
+                                        sw.Write(Convert.ToString(totTva55));
+                                        sw.Write(";");
+                                        sw.Write(Convert.ToString(totHtProd20));
+                                        sw.Write(";");
+                                        sw.Write(Convert.ToString(totHtProd10));
+                                        sw.Write(";");
+                                        sw.Write(Convert.ToString(totHtProd55));
+                                        sw.Write(";");
+                                        sw.Write(Convert.ToString(totHtProd0));
+                                        sw.Write(";");
+                                        sw.Write(Convert.ToString(totHtPrest20));
+                                        sw.Write(";");
+                                        sw.Write(Convert.ToString(totHtPrest10));
+                                        sw.Write(";");
+                                        sw.Write(Convert.ToString(totHtPrest55));
+                                        sw.Write(";");
+                                        sw.Write(Convert.ToString(totHtPrest0));
+                                        sw.Write(";");
+                                        sw.Write(retourRequete1["TOTTTC"]);
+                                        sw.Write(Environment.NewLine);
+                                    }
+                                }                                
                             }
                             catch (Exception ex)
                             {
